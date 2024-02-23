@@ -6,11 +6,14 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react'
 import ConnectWallet from './ConnectWallet';
+import { server } from '../Context/store';
+import { FaucetUSDC } from '../soroban/faucetUSDC';
 
 interface ConnectWalletProp {
     activeWalletKey: string | undefined,
     setActiveWalletKey: React.Dispatch<React.SetStateAction<string | undefined>>,
-    walletKit: StellarWalletsKit | undefined
+    walletKit: StellarWalletsKit | undefined,
+    showToast: (msg:string) => void
 }
 
 
@@ -30,7 +33,7 @@ export default function Header(prop: ConnectWalletProp) {
                     <ul className='flex items-center font-bold ml-6'>
                     <Link href={"/"} className='mx-3 hover:text-slate-700'>Pools</Link>
                     <Link href={"/createpool"} className='mx-3 hover:text-slate-700'>Create Pool</Link>
-                    {/* <Link href={""} className='mx-3 hover:text-slate-700'>Mint Futurenet USDC</Link> */}
+                    <Button onClick={()=>{FaucetUSDC(server,prop.walletKit,prop.showToast)}} className='mx-3 hover:text-slate-700'>Send 10 USDC</Button>
                 </ul>
                 </div> 
                 

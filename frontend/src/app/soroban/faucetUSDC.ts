@@ -7,50 +7,57 @@ import {
     SorobanRpc,
     Contract,
     xdr,
-    scValToNative
+    scValToNative,
+    Keypair,
+
 } from '@stellar/stellar-sdk';
 import { CONTRACT_ADDRESS, FACTORY_CONTRACT_ADDRESS } from "./default_data";
 import { ERRORS, SendTxStatus } from "./erros";
 
 
 
-export const createPool = async (
+export const FaucetUSDC = async (
     server: SorobanRpc.Server,
-    walletConnectKit: StellarWalletsKit,
-    pool_name: string,
+    walletConnectKit: StellarWalletsKit | undefined,
+    showToast: (msg:string) => void
 ) => {
 
-    const accPubkey = await walletConnectKit.getPublicKey();
+    const accPubkey = await walletConnectKit!.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
 
-    const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name)];
+    let owner = Keypair.fromSecret("SDUVTKDKZWIOGMT5A2QRK24GNZXVLAT73KUDCFWSAPV2LHMADRGBTEMA")
 
-    const contract = new Contract(FACTORY_CONTRACT_ADDRESS);
+    const owner_account = await server.getAccount(owner.publicKey());
+
+
+    const params = [accountToScVal(accPubkey), numberToI128(1000000000)];
+
+    const contract = new Contract("CCU4UCIHCQRU3YY4465SWCQYSQYC5STUAPGKR3MDSWMESVSGOT3IPZOG");
 
 
     const fee = "100";
 
-    const transaction = new TransactionBuilder(account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
-        addOperation(contract.call("create_pool", ...params)).setTimeout(30).build();
-
+    const transaction = new TransactionBuilder(owner_account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
+        addOperation(contract.call("mint", ...params)).setTimeout(30).build();
 
 
     const preparedtransaction = await server.prepareTransaction(transaction);
 
 
-    const { signedXDR } = await walletConnectKit.sign({
-        xdr: preparedtransaction.toXDR(),
-        publicKey: accPubkey
-    });
+    preparedtransaction.sign(owner);
 
 
-    const tx = TransactionBuilder.fromXDR(signedXDR, TESTNET_DETAILS.networkPassphrase);
+    const tx = TransactionBuilder.fromXDR(preparedtransaction.toXDR(), TESTNET_DETAILS.networkPassphrase);
 
     const sendResponse = await server.sendTransaction(tx);
 
 
     if (sendResponse.errorResult) {
+
+        console.log("Failed", sendResponse.errorResult);
+
+        showToast("Please try after some time");
 
         return ERRORS.UNABLE_TO_SUBMIT_TX;
     }
@@ -71,17 +78,15 @@ export const createPool = async (
         }
 
         if (txResponse.status === SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
+            
+            showToast("Successfully minted 10 USDC");
 
             if (txResponse.returnValue) {
 
                 return scValToNative(txResponse.returnValue)
             }
-
         }
         // eslint-disable-next-line no-else-return
     }
-    
-
-
-    return ERRORS.UNABLE_TO_SUBMIT_TX;
+    console.log("Failed Last")
 };

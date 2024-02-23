@@ -77,11 +77,10 @@ export default function GlobalContext({ children }: React.PropsWithChildren) {
 
     function showToast(msg: String) { toast(msg) };
 
-
     return (
         <Context.Provider value={{ activePubkey, setActivePubKey, walletConnectKit, showToast }}>
             <ToastContainer />
-            <Header activeWalletKey={activePubkey} setActiveWalletKey={setActivePubKey} walletKit={walletConnectKit} key="ConnectWallet" />
+            <Header activeWalletKey={activePubkey} setActiveWalletKey={setActivePubKey} walletKit={walletConnectKit} showToast={showToast} key="ConnectWallet" />
             {children}
         </Context.Provider>
     )

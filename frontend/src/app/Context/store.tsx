@@ -6,7 +6,7 @@ import {
     SorobanRpc,
 } from '@stellar/stellar-sdk';
 import { usePathname } from 'next/navigation';
-import { Network, SUPPORTED_NETWORK } from '../soroban/default_data';
+import { Network, SUPPORTED_NETWORK, SUPPORTED_NETWORK1 } from '../soroban/default_data';
 import Header from '../components/header';
 import { ToastContainer, toast } from 'react-toastify';
 import { getNetwork } from "@stellar/freighter-api"
@@ -62,7 +62,7 @@ export default function GlobalContext({ children }: React.PropsWithChildren) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function get_wallet_pubkey() {
         let network = await getNetwork();
-        if (network == SUPPORTED_NETWORK) {
+        if (network == SUPPORTED_NETWORK || network == SUPPORTED_NETWORK1) {
             if (walletConnectKit) {
                 const key = await walletConnectKit.getPublicKey();
                 if (key != undefined) {

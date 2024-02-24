@@ -9,7 +9,7 @@ import { withdrawUSDC } from "../soroban/withdraw";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { getNetwork } from "@stellar/freighter-api";
-import { SUPPORTED_NETWORK } from "../soroban/default_data";
+import { SUPPORTED_NETWORK, SUPPORTED_NETWORK1 } from "../soroban/default_data";
 
 
 
@@ -69,8 +69,10 @@ export default function Page() {
 
   async function getConnectedNetwork() {
     let network = await getNetwork();
-    if (network != SUPPORTED_NETWORK) {
-      console.log("first")
+    if (network == SUPPORTED_NETWORK || network == SUPPORTED_NETWORK1) {
+    
+      setIsWrongNetwork(false);
+    }else{
       setIsWrongNetwork(true);
     }
   }

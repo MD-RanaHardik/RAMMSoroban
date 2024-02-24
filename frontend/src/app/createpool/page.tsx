@@ -4,7 +4,7 @@ import { Context, server } from '../Context/store';
 import { createPool } from '../soroban/createPool';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { getNetwork } from '@stellar/freighter-api';
-import { SUPPORTED_NETWORK } from '../soroban/default_data';
+import { SUPPORTED_NETWORK, SUPPORTED_NETWORK1 } from '../soroban/default_data';
 
 export default function Page() {
   const {activePubkey,setActivePubKey,walletConnectKit,showToast} = useContext(Context);
@@ -20,9 +20,14 @@ export default function Page() {
   },[activePubkey])
 
   async function getConnectedNetwork() {
+    console.log("first")
     let network = await getNetwork();
-    if(network != SUPPORTED_NETWORK){
-      console.log("first")
+    console.log(network);
+
+    if (network == SUPPORTED_NETWORK || network == SUPPORTED_NETWORK1) {
+     
+      setIsWrongNetwork(false);
+    }else{
       setIsWrongNetwork(true);
     }
   }

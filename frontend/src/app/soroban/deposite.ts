@@ -11,6 +11,7 @@ import {
 } from '@stellar/stellar-sdk';
 import { CONTRACT_ADDRESS, FACTORY_CONTRACT_ADDRESS } from "./default_data";
 import { ERRORS, SendTxStatus } from "./erros";
+import { xdr } from "soroban-client";
 
 
 
@@ -24,6 +25,8 @@ export const depositUSDC = async (
     const accPubkey = await walletConnectKit.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
+
+    xdr.ScVal.scvBytes(Buffer.from("0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5","hex"))
 
     const params = [nativeToScVal(pool_id), accountToScVal(accPubkey), numberToI128(amount)];
 

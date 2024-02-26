@@ -725,6 +725,7 @@ checksum = "626dec3cac7cc0e1577a2ec3fc496277ec2baa084bebad95bb6fdbfae235f84c"
 name = "pool"
 version = "0.1.0"
 dependencies = [
+ "num-integer",
  "soroban-sdk",
 ]
 

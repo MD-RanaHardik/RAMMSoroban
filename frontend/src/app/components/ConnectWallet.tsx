@@ -1,10 +1,12 @@
-
+"use client"
 import { Avatar, Button, Flex, Heading, Popover, } from '@radix-ui/themes';
 import { ISupportedWallet, StellarWalletsKit, WalletType } from '@sekmet/stellar-wallets-kit'
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { getBalanceUSDC } from '../soroban/getBalanceUSDC';
+import { Context, server } from '../Context/store';
 
 
 
@@ -18,6 +20,24 @@ export default function ConnectWallet(prop: ConnectWalletProp) {
 
     const path = usePathname();
 
+    const [usdcbalance,setUSDCBalance] = useState<number>(0);
+
+    const { activePubkey, setActivePubKey, walletConnectKit, showToast } = useContext(Context);
+
+
+    useEffect(() => {
+        GetUSDCBalance();
+    }, [])
+
+    async function GetUSDCBalance() {
+        await getBalanceUSDC(server,walletConnectKit).then((result) => {
+            // console.log("Balance",result)
+            setUSDCBalance(parseInt(result)/ (10**9));
+        }).catch((err) => {
+            console.log(err)
+        });
+    }
+    
 
 
     return (
@@ -31,9 +51,9 @@ export default function ConnectWallet(prop: ConnectWalletProp) {
                                 {prop.activeWalletKey.substring(0, 7) + "..."}
                             </Button>
                         </Popover.Trigger>
-                        <Popover.Content className='bg-slate-700 outline outline-1 outline-slate-900 px-10 py-5 rounded-md' >
-                            <Heading className='text-white text-center'>0 XML</Heading>
-                            <p className='text-white text-center'>$0.00</p>
+                        <Popover.Content className='bg-slate-200 outline outline-1 outline-slate-300 px-10 py-5 rounded-md' >
+                            <Heading className='text-slate-800 text-center'>USDC</Heading>
+                            <p className='text-slate-800 text-center'>{usdcbalance}</p>
                         </Popover.Content>
                     </Popover.Root>
 

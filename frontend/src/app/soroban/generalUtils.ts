@@ -11,7 +11,7 @@ export const simulateTx = async <ArgType>(
       SorobanRpc.Api.isSimulationSuccess(response) &&
       response.result !== undefined
     ) {
-      // console.log(scValToNative(response.result.retval));
+      console.log(scValToNative(response.result.retval));
       return scValToNative(response.result.retval);
     }
   
@@ -26,6 +26,7 @@ new Address(account).toScVal();
 // Can be used whenever you need an i128 argument for a contract method
 export const numberToI128 = (value: number): xdr.ScVal =>
 nativeToScVal(value, { type: "i128" });
+
 
 export const numberTou32 = (value: number): xdr.ScVal =>
 nativeToScVal(value, { type: "u32" });

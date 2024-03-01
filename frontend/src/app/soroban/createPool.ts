@@ -18,13 +18,22 @@ export const createPool = async (
     server: SorobanRpc.Server,
     walletConnectKit: StellarWalletsKit,
     pool_name: string,
+    max_primary_quantity:number,
+    max_primary_price:number,
+    secondary_available:number,
+    initial_primary_price:number,
+    steepness:number
 ) => {
 
     const accPubkey = await walletConnectKit.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
 
-    const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name)];
+    // owner:Address,pool_name:String,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,steepness:u32
+
+    const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name),numberToI128(max_primary_quantity),numberToI128(max_primary_price),numberToI128(initial_primary_price),numberToI128(secondary_available),numberTou32(steepness)];
+
+    // const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name)];
 
     const contract = new Contract(FACTORY_CONTRACT_ADDRESS);
 

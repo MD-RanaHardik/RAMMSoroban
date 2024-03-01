@@ -6,58 +6,54 @@ import {
     TransactionBuilder,
     SorobanRpc,
     Contract,
-    xdr,
     scValToNative,
-    Keypair,
-
+    nativeToScVal
 } from '@stellar/stellar-sdk';
 import { CONTRACT_ADDRESS, FACTORY_CONTRACT_ADDRESS } from "./default_data";
 import { ERRORS, SendTxStatus } from "./erros";
+import { xdr } from "soroban-client";
 
 
 
-export const FaucetUSDC = async (
+export const archivePool = async (
     server: SorobanRpc.Server,
-    walletConnectKit: StellarWalletsKit | undefined,
-    showToast: (msg:string) => void
+    walletConnectKit: StellarWalletsKit |undefined,
+    pool_id: string | undefined,
 ) => {
 
     const accPubkey = await walletConnectKit!.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
 
-    let owner = Keypair.fromSecret("SDUVTKDKZWIOGMT5A2QRK24GNZXVLAT73KUDCFWSAPV2LHMADRGBTEMA")
+    // xdr.ScVal.scvBytes(Buffer.from("0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5","hex"))
 
-    const owner_account = await server.getAccount(owner.publicKey());
+    const params = [nativeToScVal(pool_id), accountToScVal(accPubkey)];
 
-
-    const params = [accountToScVal(accPubkey), numberToI128(10000000000)];
-
-    const contract = new Contract("CB7XVGJGKZNHPAATSVP67VOOIYJ4EPQZ5IMSGWAGDHDO6JW4NRIA5UPU");
+    const contract = new Contract(FACTORY_CONTRACT_ADDRESS);
 
 
     const fee = "100";
 
-    const transaction = new TransactionBuilder(owner_account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
-        addOperation(contract.call("mint", ...params)).setTimeout(30).build();
+    const transaction = new TransactionBuilder(account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
+        addOperation(contract.call("archive_pool", ...params)).setTimeout(30).build();
+
 
 
     const preparedtransaction = await server.prepareTransaction(transaction);
 
 
-    preparedtransaction.sign(owner);
+    const { signedXDR } = await walletConnectKit!.sign({
+        xdr: preparedtransaction.toXDR(),
+        publicKey: accPubkey
+    });
 
 
-    const tx = TransactionBuilder.fromXDR(preparedtransaction.toXDR(), TESTNET_DETAILS.networkPassphrase);
+    const tx = TransactionBuilder.fromXDR(signedXDR, TESTNET_DETAILS.networkPassphrase);
 
     const sendResponse = await server.sendTransaction(tx);
 
 
     if (sendResponse.errorResult) {
-
-        console.log("Failed", sendResponse.errorResult);
-
-        showToast("Please try after some time");
 
         return ERRORS.UNABLE_TO_SUBMIT_TX;
     }
@@ -66,6 +62,8 @@ export const FaucetUSDC = async (
 
         let txResponse = await server.getTransaction(sendResponse.hash);
 
+
+        // Poll this until the status is not "NOT_FOUND"
 
         while (txResponse.status === SorobanRpc.Api.GetTransactionStatus.NOT_FOUND) {
             // See if the transaction is complete
@@ -78,15 +76,16 @@ export const FaucetUSDC = async (
         }
 
         if (txResponse.status === SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
-            
-            showToast("Successfully minted 10 USDC");
 
             if (txResponse.returnValue) {
 
                 return scValToNative(txResponse.returnValue)
             }
+
         }
         // eslint-disable-next-line no-else-return
     }
-    console.log("Failed Last")
+
+
+    return ERRORS.UNABLE_TO_SUBMIT_TX;
 };

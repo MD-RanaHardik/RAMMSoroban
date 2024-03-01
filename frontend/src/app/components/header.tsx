@@ -22,7 +22,7 @@ export default function Header(prop: ConnectWalletProp) {
     const path = usePathname();
 
     return (
-        <div className='flex justify-between px-5 py-6 items-center bg-slate-100'>
+        <div className='flex justify-between px-5 py-6 items-center drop-shadow-sm shadow-md'>
                 <div className='flex'>
                     <div>
                         <div className='flex'>
@@ -33,7 +33,7 @@ export default function Header(prop: ConnectWalletProp) {
                     <ul className='flex items-center font-bold ml-6'>
                     <Link href={"/"} className='mx-3 hover:text-slate-700'>Pools</Link>
                     <Link href={"/createpool"} className='mx-3 hover:text-slate-700'>Create Pool</Link>
-                    <Button onClick={()=>{FaucetUSDC(server,prop.walletKit,prop.showToast)}} className='mx-3 hover:text-slate-700'>Send 10 USDC</Button>
+                    <button onClick={()=>{FaucetUSDC(server,prop.walletKit,prop.showToast)}} className='mx-3 hover:text-slate-700'>Send 10 USDC</button>
                 </ul>
                 </div> 
                 

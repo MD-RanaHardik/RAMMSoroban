@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/themes": "^2.0.3",
-    "@sekmet/stellar-wallets-kit": "^0.1.1",
+    "@sekmet/stellar-wallets-kit": "0.1.1",
     "@soroban-react/chains": "^7.0.0",
     "@soroban-react/connect-button": "^7.0.0",
     "@soroban-react/contracts": "^7.0.0",

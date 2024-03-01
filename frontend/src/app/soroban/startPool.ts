@@ -9,23 +9,25 @@ import {
     scValToNative,
     nativeToScVal
 } from '@stellar/stellar-sdk';
-import { FACTORY_CONTRACT_ADDRESS } from "./default_data";
+import { CONTRACT_ADDRESS, FACTORY_CONTRACT_ADDRESS } from "./default_data";
 import { ERRORS, SendTxStatus } from "./erros";
+import { xdr } from "soroban-client";
 
 
 
-export const withdrawUSDC = async (
+export const startPool = async (
     server: SorobanRpc.Server,
-    walletConnectKit: StellarWalletsKit,
+    walletConnectKit: StellarWalletsKit |undefined,
     pool_id: string | undefined,
-    amount: number
 ) => {
 
-    const accPubkey = await walletConnectKit.getPublicKey();
+    const accPubkey = await walletConnectKit!.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
 
-    const params = [nativeToScVal(pool_id), accountToScVal(accPubkey), numberToI128(amount)];
+    // xdr.ScVal.scvBytes(Buffer.from("0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5","hex"))
+
+    const params = [nativeToScVal(pool_id), accountToScVal(accPubkey)];
 
     const contract = new Contract(FACTORY_CONTRACT_ADDRESS);
 
@@ -33,12 +35,14 @@ export const withdrawUSDC = async (
     const fee = "100";
 
     const transaction = new TransactionBuilder(account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
-        addOperation(contract.call("withdraw", ...params)).setTimeout(30).build();
+        addOperation(contract.call("start", ...params)).setTimeout(30).build();
+
+
 
     const preparedtransaction = await server.prepareTransaction(transaction);
 
 
-    const { signedXDR } = await walletConnectKit.sign({
+    const { signedXDR } = await walletConnectKit!.sign({
         xdr: preparedtransaction.toXDR(),
         publicKey: accPubkey
     });
@@ -81,7 +85,7 @@ export const withdrawUSDC = async (
         }
         // eslint-disable-next-line no-else-return
     }
-    
+
 
     return ERRORS.UNABLE_TO_SUBMIT_TX;
 };

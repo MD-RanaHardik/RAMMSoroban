@@ -13,6 +13,7 @@ import { getNetwork } from "@stellar/freighter-api"
 import { TESTNET_DETAILS } from '../soroban/network';
 
 
+
 const { Server } = SorobanRpc;
 
 

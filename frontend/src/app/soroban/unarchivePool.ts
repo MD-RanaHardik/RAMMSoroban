@@ -15,20 +15,19 @@ import { xdr } from "soroban-client";
 
 
 
-export const depositUSDC = async (
+export const unarchivePool = async (
     server: SorobanRpc.Server,
-    walletConnectKit: StellarWalletsKit,
+    walletConnectKit: StellarWalletsKit |undefined,
     pool_id: string | undefined,
-    amount: number
 ) => {
 
-    const accPubkey = await walletConnectKit.getPublicKey();
+    const accPubkey = await walletConnectKit!.getPublicKey();
 
     const account = await server.getAccount(accPubkey);
 
-    xdr.ScVal.scvBytes(Buffer.from("0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5","hex"))
+    // xdr.ScVal.scvBytes(Buffer.from("0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5","hex"))
 
-    const params = [nativeToScVal(pool_id), accountToScVal(accPubkey), numberToI128(amount)];
+    const params = [nativeToScVal(pool_id), accountToScVal(accPubkey)];
 
     const contract = new Contract(FACTORY_CONTRACT_ADDRESS);
 
@@ -36,14 +35,14 @@ export const depositUSDC = async (
     const fee = "100";
 
     const transaction = new TransactionBuilder(account, { fee, networkPassphrase: TESTNET_DETAILS.networkPassphrase, }).
-        addOperation(contract.call("deposit", ...params)).setTimeout(30).build();
+        addOperation(contract.call("unarchive_pool", ...params)).setTimeout(30).build();
 
 
 
     const preparedtransaction = await server.prepareTransaction(transaction);
 
 
-    const { signedXDR } = await walletConnectKit.sign({
+    const { signedXDR } = await walletConnectKit!.sign({
         xdr: preparedtransaction.toXDR(),
         publicKey: accPubkey
     });

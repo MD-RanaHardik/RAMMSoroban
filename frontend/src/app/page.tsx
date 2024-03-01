@@ -108,7 +108,7 @@ export default function Page() {
       getAvailablePools();
     }).catch((e) => {
 
-      showToast(`Something went wrong`);
+      showToast(`Please check balance`);
     })
 
 

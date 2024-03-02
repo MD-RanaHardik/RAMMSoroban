@@ -14,11 +14,11 @@ import { CONTRACT_ADDRESS, FACTORY_CONTRACT_ADDRESS } from "./default_data";
 
 export const getBalance = async (
   server: SorobanRpc.Server,
-  walletConnectKit: StellarWalletsKit,
+  walletConnectKit: StellarWalletsKit | undefined,
   pool_id: string | undefined
 ) => {
 
-  const accPubkey = await walletConnectKit.getPublicKey();
+  const accPubkey = await walletConnectKit!.getPublicKey();
 
   const account = await server.getAccount(accPubkey);
 

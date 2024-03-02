@@ -17,17 +17,17 @@ const merCure = async () => {
     const native_1 = scValToNative(scval_1)
     const native_2 = scValToNative(scval_2)
 
-    console.log(
-        // native_1,
-        native_2,
-    )
+    // console.log(
+    //     // native_1,
+    //     native_2,
+    // )
     let inovative = "RAMMBuy"
     let sellin = "RAMMSell"
-    console.log(
-        // nativeToScVal(99, { type: 'u32' }).toXDR('base64'),
-        nativeToScVal(sellin, {type: 'symbol'}).toXDR('base64'),
-        // nativeToScVal(inovative).toXDR('base64'),
-    )
+    // console.log(
+    //     // nativeToScVal(99, { type: 'u32' }).toXDR('base64'),
+    //     nativeToScVal(sellin, {type: 'symbol'}).toXDR('base64'),
+    //     // nativeToScVal(inovative).toXDR('base64'),
+    // )
 }
 
 
@@ -92,10 +92,13 @@ export const getEvents = async (ledgerStartFrom: number | undefined, pool: strin
         })
         let json = await res.json()
 
+        // console.log("Json data",scValToNative(xdr.ScVal.fromXDR(json, 'base64'))).toString());
+
         if (json?.result?.events) {
             let ptx = [];
             for (let i in json?.result?.events) {
-                // let i1 = scValToNative(xdr.ScVal.fromXDR(json?.result?.events[i].topic[2], 'base64'))
+                // let i1 = scValToNative(xdr.ScVal.fromXDR(json?.result?.events[i].value, 'base64'))
+                // console.log(i1);
                 if (json?.result?.events[i]?.contractId == pool) {
                     ptx.push(json?.result?.events[i])
                 }

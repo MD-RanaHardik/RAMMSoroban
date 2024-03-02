@@ -5,7 +5,7 @@ import { Context, server } from './Context/store';
 import { getAllPools } from './soroban/getAllPools';
 import MySorobanReactProvider from './soroban/provider';
 import { VscOpenPreview } from "react-icons/vsc";
-import { DropdownMenu, Button, } from '@radix-ui/themes';
+import { DropdownMenu, Button, Flex, } from '@radix-ui/themes';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { IoMdMore } from "react-icons/io";
@@ -21,6 +21,8 @@ import { useRouter } from 'next/navigation';
 import { getBuyPrice } from './soroban/getBuyPrice';
 import { getSellPrice } from './soroban/getSellPrice';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { tree } from 'next/dist/build/templates/app-page';
+import { getBalance } from './soroban/getBalance';
 
 
 
@@ -75,7 +77,12 @@ export default function Page() {
 
   const [buyPrice, setBuyPrice] = useState(0);
   const [sellPrice, setSellPrice] = useState(0);
+  const [buyOrSell, setBuyOrSell] = useState(true);
   const [inSecondaryMode, setInSecondaryMode] = useState(false);
+  const [openModel, setOpenModel] = useState(false);
+  const [poolID, setPoolID] = useState<string|undefined>(undefined);
+  const [usdcBalance, setUSDCBalance] = useState(0);
+  const [pvtBalance, setPVTBalance] = useState(0);
 
   const router = useRouter();
 
@@ -104,10 +111,11 @@ export default function Page() {
   async function BuyPVTTOken(poolId: string) {
 
     await buyPVTTOken(server, walletConnectKit, poolId).then((e) => {
+      setOpenModel(false);
       showToast(`Token bought successfully`);
       getAvailablePools();
     }).catch((e) => {
-
+      setOpenModel(false);
       showToast(`Please check balance`);
     })
 
@@ -117,10 +125,11 @@ export default function Page() {
   async function SellPVTTOken(poolId: string) {
 
     await sellPVTToken(server, walletConnectKit, poolId).then((e) => {
+      setOpenModel(false);
       showToast(`Token sold successfully`);
       getAvailablePools();
     }).catch((e) => {
-
+      setOpenModel(false);
       showToast(`Pool not in secondary mode`);
     })
 
@@ -194,25 +203,44 @@ export default function Page() {
     })
   }
 
-  async function GetBuyPrice(poolId: string) {
+  async function PoolBalance(poolId: string) {
 
-    await getBuyPrice(server, walletConnectKit, poolId).then((e) => {
-      setBuyPrice(parseInt(e.toString())/ (10**9));
-      // getAvailablePools();
-    }).catch((e) => {
-
+    await getBalance(server, walletConnectKit, poolId).then((e) => {
       console.log(e);
-
+      setUSDCBalance(parseInt(e[0]) / (10**9));
+      setPVTBalance(parseInt(e[1]) / (10**9));
+    }).catch((e) => {
+      console.log(e);
     })
   }
 
-  async function GetSellPrice(poolId: string) {
+ 
+  async function InitBuy(pool_id:string){
 
-    await getSellPrice(server, walletConnectKit, poolId).then((e) => {
-      console.log(e);
-      setSellPrice(parseInt(e[1])/ (10**9));
-      setInSecondaryMode((e[0].toString() == "false") ? false : true);
+      await PoolBalance(pool_id);
+
+      await getBuyPrice(server, walletConnectKit, pool_id).then((e) => {
+        setBuyPrice(parseInt(e.toString()) / (10 ** 9));
+        setPoolID(pool_id);
+        setBuyOrSell(true);
+        setOpenModel(true);
+      }).catch((e) => {
   
+        console.log(e);
+  
+      })
+  }
+
+  async function InitSell(pool_id:string){
+
+    await PoolBalance(pool_id);
+
+    await getSellPrice(server, walletConnectKit, pool_id).then((e) => {
+      setSellPrice(parseInt(e[1]) / (10 ** 9));
+      setInSecondaryMode((e[0].toString() == "false") ? false : true);
+      setPoolID(pool_id);
+      setBuyOrSell(false);
+      setOpenModel(true);
     }).catch((e) => {
 
       console.log(e);
@@ -220,41 +248,61 @@ export default function Page() {
     })
   }
 
-  function Buy(props:{btn: React.ReactNode,pool_id:string}) {
 
+
+  function Model() {
     return <>
-      <Dialog.Root>
-        <Dialog.Trigger asChild>
-          {props.btn}
-        </Dialog.Trigger>
+      <Dialog.Root open={openModel} onOpenChange={()=>{setOpenModel(!openModel)}}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0 bg-slate-600/25 backdrop-blur" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="text-3xl font-semibold">
-              Buy
+              {buyOrSell ? "Buy" : "Sell"}
             </Dialog.Title>
             <Dialog.Description className="text-slate-800 mt-7 mb-5 text-lg leading-normal">
-              {buyPrice} USDC ≈ 1 PVT
+              {
+                buyOrSell ? <>{buyPrice} USDC ≈ 1 PVT</>
+                : 
+                <>1 PVT ≈ {sellPrice} USDC</>
+              }
+              
+              
             </Dialog.Description>
             <fieldset className="mb-[15px] flex items-center gap-5 justify-center">
               <input
                 className="text-slate-900 bg-slate-100 shadow-violet focus:shadow-violet8 w-full flex-1 items-center justify-center rounded-[4px] px-5 py-5 text-2xl"
                 disabled={true}
-                value={buyPrice}
+                value={buyOrSell ? buyPrice : sellPrice}
               />
             </fieldset>
             <div className="mt-[25px] flex justify-center">
               {/* <Dialog.Close asChild> */}
-                <button onClick={()=>{BuyPVTTOken(props.pool_id.toString())}} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">
-                  Buy
-                </button>
+
+              {
+                buyOrSell ?
+                  (usdcBalance >= buyPrice)?
+                  <button onClick={() => {poolID && BuyPVTTOken(poolID)}} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Buy</button>
+                  :
+                  <button className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none disabled:cursor-not-allowed" disabled={true}>Insufficient Balance</button>
+                :
+                  inSecondaryMode ?
+                    (pvtBalance >= 1)?
+                    <button onClick={() => {poolID && SellPVTTOken(poolID) }} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Sell</button>
+                    :
+                    <button className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none disabled:cursor-not-allowed" disabled={true}>Insufficient Balance</button>
+                    :
+                    <button className="cursor-not-allowed text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none " disabled={true}>
+                      NOT IN SECONDARY MODE
+                    </button>
+              }
+              
               {/* </Dialog.Close> */}
             </div>
             <Dialog.Close asChild>
               <button
                 className="text-slate-900 hover:bg-slate-100 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
-                aria-label="Close"
-              >
+                aria-label="Close">
+
                 <Cross2Icon />
               </button>
             </Dialog.Close>
@@ -266,63 +314,7 @@ export default function Page() {
 
   }
 
-  function Sell(props:{btn: React.ReactNode,pool_id:string}) {
-
-    return <>
-      <Dialog.Root>
-        <Dialog.Trigger asChild>
-          {props.btn}
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0 bg-slate-600/25 backdrop-blur" />
-          <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-            <Dialog.Title className="text-3xl font-semibold">
-              Sell
-            </Dialog.Title>
-            <Dialog.Description className="text-slate-800 mt-7 mb-5 text-lg leading-normal">
-              1 PVT ≈ {sellPrice} USDC
-            </Dialog.Description>
-            <fieldset className="mb-[15px] flex items-center gap-5 justify-center">
-              <input
-                className="text-slate-900 bg-slate-100 shadow-violet focus:shadow-violet8 w-full flex-1 items-center justify-center rounded-[4px] px-5 py-5 text-2xl"
-                disabled={true}
-                value={sellPrice}
-              />
-            </fieldset>
-            <div className="mt-[25px] flex justify-center">
-
-              {
-                inSecondaryMode ? 
-                <button onClick={()=>{SellPVTTOken(props.pool_id.toString())}} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">
-                  Sell
-                </button>
-                :
-                <button className="cursor-not-allowed text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none " disabled={true}>
-                  NOT IN SECONDARY MODE
-                </button>
-              }
-              
-                
-             
-            </div>
-            <Dialog.Close asChild>
-              <button 
-                className="text-slate-900 hover:bg-slate-100 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
-                aria-label="Close"
-              >
-                <Cross2Icon />
-              </button>
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
-
-    </>
-
-  }
-
-
-
+ 
 
 
   function TableRow(props: tableRowProps) {
@@ -376,10 +368,9 @@ export default function Page() {
             <DropdownMenu.Content className='bg-slate-100 shadow-md p-3'>
 
               <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { router.push(`/txns/${props?.pool_address}`) }}>Transactions</DropdownMenu.Item>
-              {(props.pool_status == 1) && <Buy pool_id={props.pool_id.toString()} btn={<button onClick={()=>{GetBuyPrice(props.pool_id.toString())}} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>} />}
-              {(props.pool_status == 1) && <Sell pool_id={props.pool_id.toString()} btn={<button onClick={()=>{GetSellPrice(props.pool_id.toString())}} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>} />}
-              {/* {(props.pool_status == 1) && <DropdownMenu.Item onClick={() => { BuyPVTTOken(props.pool_id.toString()) }} >Buy</DropdownMenu.Item>} */}
-              {/* {(props.pool_status == 1) && <DropdownMenu.Item onClick={() => { SellPVTTOken(props.pool_id.toString()) }}>Sell</DropdownMenu.Item>} */}
+              <button onClick={() => { InitBuy(props.pool_id.toString()) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
+              <button onClick={() => { InitSell(props.pool_id.toString()) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
+              
               <DropdownMenu.Separator />
               {(props.pool_status == 0 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StartPool(props.pool_id.toString()) }}>Start Pool</DropdownMenu.Item>}
               {(props.pool_status == 1 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StopPool(props.pool_id.toString()) }}>Stop Pool</DropdownMenu.Item>}
@@ -404,7 +395,8 @@ export default function Page() {
   return (
     <MySorobanReactProvider >
 
-      <div className='p-5 shadow-lg mx-20 rounded-md mt-10 ring-1 ring-slate-100'>
+      <div className='p-5 shadow-lg mx-20 rounded-md mt-10 mb-20 ring-1 ring-slate-100'>
+        <Model />
         <h1 className='text-slate-700 font-semibold text-lg mb-5 ml-5'>Pools</h1>
         <div className="relative overflow-x-auto">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
@@ -448,9 +440,9 @@ export default function Page() {
                 </th>
               </tr>
             </thead>
-            
+
             <tbody>
-              
+
               {
 
                 (pools == undefined) ?
@@ -459,16 +451,16 @@ export default function Page() {
                       <p className='font-bold py-5 text-center flex items-center justify-center'>Loading <AiOutlineLoading3Quarters className='animate-spin ml-3' /></p>
                     </td>
                   </tr>
-                :
-                Object.entries(pools).map((value, index) => {
+                  :
+                  Object.entries(pools).map((value, index) => {
 
-                  return <TableRow key={index + 1} index={index + 1} pool_address={value[1]["pool_address"]} pool_id={value[1]["pool_id"]} pool_name={value[1]["pool_name"]} pool_owner={value[1]["owner"]} primary_max_qty={value[1]["pvt_qty_max_primary"]} secondary_max_qty={value[1]["pvt_qty_max_secondary"]} primary_max_price={value[1]["pvt_price_max_primary"]} secondary_max_price={value[1]["pvt_price_max_secondary"]} initial_price={value[1]["pvt_price_initial_primary"]} primary_steepness={parseInt(value[1]["c_primary_steepness"])} secondary_steepness={parseInt(value[1]["c_primary_steepness"])} treasury={value[1]["treasury"]} pvttokens={parseInt(value[1]["x"])} pool_status={value[1]["pool_status"]} archived={value[1]["archived"]} />
-                })
+                    return <TableRow key={index + 1} index={index + 1} pool_address={value[1]["pool_address"]} pool_id={value[1]["pool_id"]} pool_name={value[1]["pool_name"]} pool_owner={value[1]["owner"]} primary_max_qty={value[1]["pvt_qty_max_primary"]} secondary_max_qty={value[1]["pvt_qty_max_secondary"]} primary_max_price={value[1]["pvt_price_max_primary"]} secondary_max_price={value[1]["pvt_price_max_secondary"]} initial_price={value[1]["pvt_price_initial_primary"]} primary_steepness={parseInt(value[1]["c_primary_steepness"])} secondary_steepness={parseInt(value[1]["c_primary_steepness"])} treasury={value[1]["treasury"]} pvttokens={parseInt(value[1]["x"])} pool_status={value[1]["pool_status"]} archived={value[1]["archived"]} />
+                  })
 
               }
 
             </tbody>
-            
+
           </table>
         </div>
 

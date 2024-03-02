@@ -5,12 +5,13 @@ import { VscOpenPreview } from "react-icons/vsc";
 import { getEvents } from "../../soroban/getEvents";
 import { scValToNative, xdr } from "soroban-client";
 import { Network } from "@/app/soroban/default_data";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 export default function PoolTxns({ params }:any) {
 
   const [latestLedger, setLatestLedger] = useState<number | undefined>();
-  const [poolTransactions, setPoolTransactions] = useState([]);
+  const [poolTransactions, setPoolTransactions] = useState<[]|undefined>(undefined);
 
   useEffect(() => {
     getLatestLedger()
@@ -39,7 +40,6 @@ export default function PoolTxns({ params }:any) {
       
       let data = await getEvents(latestLedger - 16500, poolId)
       if (!data?.message) {
-        console.log(data)
         setPoolTransactions(data)
       } else {
         console.log(data?.message)
@@ -49,7 +49,7 @@ export default function PoolTxns({ params }:any) {
 
   return (
 
-    <div className='p-5 shadow-lg mx-20 rounded-md mt-10 ring-1 ring-slate-100'>
+    <div className='p-5 shadow-lg mx-20 rounded-md mt-10 mb-20 ring-1 ring-slate-100'>
 
       <h1 className='text-slate-700 font-semibold text-lg mb-5 ml-5'>Pool Transactions</h1>
 
@@ -73,6 +73,9 @@ export default function PoolTxns({ params }:any) {
                 Current X
               </th>
               <th scope="col" className="px-6 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Ledger Close Time
               </th>
               <th scope="col" className="px-6 py-3">
@@ -82,11 +85,26 @@ export default function PoolTxns({ params }:any) {
           </thead>
           <tbody>
             {
-              poolTransactions.map((e) => {
-                return (
-                  <TableRow key={e} props={e} />
-                )
-              })
+
+              (poolTransactions == undefined) ?
+                <tr className=''>
+                    <td colSpan={8} className='text-center ml-auto mr-auto'>
+                      <p className='font-bold py-5 text-center flex items-center justify-center'>Loading <AiOutlineLoading3Quarters className='animate-spin ml-3' /></p>
+                    </td>
+                  </tr>
+                :
+                (poolTransactions.length == 0)?
+                <tr className=''>
+                    <td colSpan={8} className='text-center ml-auto mr-auto'>
+                      <p className='font-bold py-5 text-center flex items-center justify-center'>Transaction Data Not Found</p>
+                    </td>
+                  </tr>
+                :
+                poolTransactions.map((e,index) => {
+                  return (
+                    <TableRow key={index} props={e} />
+                  )
+                })
             }
           </tbody>
         </table>
@@ -99,7 +117,6 @@ export default function PoolTxns({ params }:any) {
 
 function TableRow(props: any) {
   return <>
-
     <tr className=" bg-white border-dashed border-b hover:bg-gray-50">
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
         {props?.props?.ledger}
@@ -115,6 +132,9 @@ function TableRow(props: any) {
       </td>
       <td className="px-6 py-4">
         {Number(scValToNative(xdr.ScVal.fromXDR(props?.props?.topic[3], 'base64'))).toString()}
+      </td>
+      <td className="px-6 py-4">
+        {parseInt(scValToNative(xdr.ScVal.fromXDR(props?.props?.value, 'base64')).toString().split(",")[0]) / (10**9)}
       </td>
       <td className="px-6 py-4">
         {props?.props?.ledgerClosedAt.replace(/T/g, '  ')}

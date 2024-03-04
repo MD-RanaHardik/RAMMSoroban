@@ -95,7 +95,7 @@ fn set_pool(env:&Env,pool_name:&String,owner:&Address,pool_address:Address,pvt_q
         pool_id:pool_id.clone(),
         archived:false,
         treasury:0,
-        x:(1 * Q9),
+        x:0,
         pvt_qty_max_primary:(pvt_qty_max_primary * Q9),
         pvt_qty_max_secondary:(pvt_qty_max_primary * Q9),
         pvt_price_max_primary:(pvt_price_max_primary * Q9),
@@ -233,7 +233,7 @@ impl Factory {
 
     pub fn create_pool(env:Env,owner:Address,pool_name:String,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,steepness:u32)->Address{
 
-        let pool_wasm_hash = bytesn!(&env,0x095323bf5622ab22863237a9a98f5543ec633b3e972c4a1faff0ae553c0108a9);
+        let pool_wasm_hash = bytesn!(&env,0x3e0b55703266e193225d096f86cf7559fb050fb754dff2afba59bbfcc1e88bec);
         
         let token_wasm_hash = bytesn!(&env,0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5);
 

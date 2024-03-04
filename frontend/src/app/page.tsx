@@ -275,8 +275,13 @@ export default function Page() {
                 value={buyOrSell ? buyPrice : sellPrice}
               />
             </fieldset>
+            <div>
+            <p>PVT Balance : {pvtBalance}</p>
+            <p>USDC Balance : {usdcBalance}</p>
+            </div>
             <div className="mt-[25px] flex justify-center">
               {/* <Dialog.Close asChild> */}
+              
 
               {
                 buyOrSell ?
@@ -316,8 +321,9 @@ export default function Page() {
 
  
 
-
   function TableRow(props: tableRowProps) {
+
+    // let pvtBalance = PoolBalance(props.pool_id.toString()).then((e)=>{return e[1]});
 
     return <>
       <tr className="bg-white border-dashed border-b hover:bg-gray-50">
@@ -354,6 +360,7 @@ export default function Page() {
         <td className="px-6 py-4">
           {(Number(props.treasury) / 10 ** 9).toString()}
         </td>
+        
         <td className="px-6 py-4 flex items-center text-center">
 
 

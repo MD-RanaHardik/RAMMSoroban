@@ -104,7 +104,7 @@ impl Pool {
 
         set_pool_name(&env, pool_name);
 
-        set_x_init(&env, 1);
+        set_x_init(&env, 0);
 
         set_owner(&env, owner);
 

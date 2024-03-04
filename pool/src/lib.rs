@@ -13,27 +13,27 @@ use soroban_sdk::{
 
 use lptoken::create_contract;
 use storage::{
-    check_switch, get_in_secondary_mode, get_pool_name, get_price_primary, get_price_secondary,
+    check_switch, get_in_secondary_mode, get_price_primary, get_price_secondary,
     get_pvt_available_secondary, get_pvt_qty_max_primary, get_pvt_qty_max_secondary,
-    get_usdc_token, get_x, is_initialized, set_a_primary_midpoint_initial_and_max,
-    set_a_primary_midpoint_initial_and_max_init, set_a_secondary_midpoint_initial_and_max,
-    set_a_secondary_midpoint_initial_and_max_init, set_b_primary_half_max_qty,
-    set_b_primary_half_max_qty_init, set_b_secondary_half_max_qty,
-    set_b_secondary_half_max_qty_init, set_c_primary_steepness, set_c_primary_steepness_init,
-    set_c_secondary_steepness, set_c_secondary_steepness_init, set_in_secondary_mode, set_owner,
-    set_p_doubleprime, set_p_prime, set_p_prime_init, set_pool_archive, set_pool_init_status,
-    set_pool_name, set_pvt_address, set_pvt_available_secondary, set_pvt_available_secondary_init,
-    set_pvt_price_initial_primary, set_pvt_price_initial_primary_init, set_pvt_price_max_primary,
-    set_pvt_price_max_primary_init, set_pvt_price_max_secondary, set_pvt_price_max_secondary_init,
-    set_pvt_qty_max_primary, set_pvt_qty_max_primary_init, set_pvt_qty_max_secondary,
+    get_usdc_token, get_x, is_initialized,
+    set_a_primary_midpoint_initial_and_max_init,
+    set_a_secondary_midpoint_initial_and_max_init,
+    set_b_primary_half_max_qty_init,
+    set_b_secondary_half_max_qty_init, set_c_primary_steepness_init,
+    set_c_secondary_steepness_init, set_owner,
+    set_p_doubleprime, set_p_prime_init, set_pool_archive,
+    set_pool_name, set_pvt_address, set_pvt_available_secondary_init,
+    set_pvt_price_initial_primary_init,
+    set_pvt_price_max_primary_init, set_pvt_price_max_secondary_init,
+     set_pvt_qty_max_primary_init, set_pvt_qty_max_secondary,
     set_pvt_qty_max_secondary_init, set_pvt_running_total_bought,
-    set_pvt_running_total_bought_init, set_pvt_running_total_sold, set_pvt_running_total_sold_init,
-    set_soldout_hits, set_soldout_hits_init, set_treasury, set_treasury_init, set_usdc_address,
+     set_pvt_running_total_sold,
+    set_soldout_hits, set_treasury, set_usdc_address,
     set_x, set_x_init, start_pool, stop_pool, withdraw_all_fund,
 };
 
 use crate::storage::{
-    get_owner, get_pool_archive, get_pvt_running_total_bought, get_pvt_running_total_sold,
+    get_owner,
     get_pvt_token, get_treasury, is_pool_started,
 };
 

@@ -41,26 +41,6 @@ const TOKEN: Symbol = symbol_short!("TOKEN");
 
 #[derive(Debug, Clone, Copy)]
 #[repr(u32)]
-pub enum DataKey {
-    IsInitialized = 0,
-    USDCAddress = 1,
-    XYZAddress = 2,
-    USDCBalance = 3,
-    CollectedFees = 4,
-    FeeTo = 5,
-    Admin = 6,
-}
-
-impl TryFromVal<Env, DataKey> for Val {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &DataKey) -> Result<Self, Self::Error> {
-        Ok((*v as u32).into())
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-#[repr(u32)]
 pub enum PoolKey {
     IsInitialized = 0,
     PoolName = 1,

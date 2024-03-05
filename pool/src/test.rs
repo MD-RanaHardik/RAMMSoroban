@@ -27,7 +27,8 @@
     
 
 //     // client.init(&install_token_wasm(&env), &owner, &String::from_str(&env,"Test"),&1000,&1000,&5000,&7000,&3000,&2000,&1000);
-//     client.init(&install_token_wasm(&env), &owner, &String::from_str(&env,"Test"),&2,&2,&5000,&7000,&3000,&4,&1000);
+//     // client.init(&install_token_wasm(&env), &owner, &String::from_str(&env,"Test"),&2000000000,&2000000000,&5000000000000,&7000000000000,&3000000000000,&4000000000,&1000);
+//     client.init(&install_token_wasm(&env), &owner, &String::from_str(&env,"Test"),&2000000000,&2000000000,&10000000000,&19000000000,&1000000000,&4000000000,&1000);
     
 //     client.mint_usdc_for_test(&user);
 
@@ -39,6 +40,9 @@
 //     log!(&env,"PVT",pvt);
 
 //     client.buy(&user);
+//     client.buy(&user);
+//     client.buy(&user);
+//     client.sell(&user);
 
 //     let (usdc,pvt) = client.balance(&user);
 

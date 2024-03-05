@@ -191,10 +191,10 @@ impl Pool {
         let pvt_qty_max_secondary = get_pvt_qty_max_secondary(&env);
         let pvt_available_secondary = get_pvt_available_secondary(&env);
 
-        let scaled_amount = amount * (10 as i128).pow(9);
+        // let scaled_amount = amount * (10 as i128).pow(9);
 
         let left = pvt_qty_max_secondary
-            .checked_add(scaled_amount)
+            .checked_add(amount)
             .expect("Overflow");
 
         let condition = left <= pvt_available_secondary;
@@ -204,7 +204,7 @@ impl Pool {
         set_pvt_qty_max_secondary(&env, amount);
 
         env.events()
-            .publish((TOKEN, symbol_short!("Expanded")), scaled_amount);
+            .publish((TOKEN, symbol_short!("Expanded")), amount);
 
         let pvt_qty_max_secondary = get_pvt_qty_max_secondary(&env);
 
@@ -272,6 +272,8 @@ impl Pool {
             (price, (1 * Q9), currant_treasury),
         );
 
+        log!(&env,"Price",price);
+
         (currant_x, currant_treasury)
     }
 
@@ -293,6 +295,8 @@ impl Pool {
         assert!(x > 0 ,"Sell is disabled");
 
         price = get_price_secondary(&env, x.checked_sub(1).expect("Underflow"));
+
+        log!(&env,"Sell Price",price);
 
         let pvttoken = get_pvt_token(&env);
         let usdctoken = get_usdc_token(&env);
@@ -323,6 +327,8 @@ impl Pool {
             ),
             (price, (1 * Q9), currant_treasury),
         );
+
+       
 
         (in_secondary_mode, currant_x, currant_treasury)
     }

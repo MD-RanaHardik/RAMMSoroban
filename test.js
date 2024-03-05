@@ -128,7 +128,7 @@ class Pool {
       pvt_available_secondary, steepness, owner) {
       this.pool_name = pool_name;
       this.pool_seq_id = pool_seq_id;
-      this.x = 1;
+      this.x = 0;
       this.archived = false;
       this.owner = owner;
       this.treasury = 0;
@@ -256,9 +256,9 @@ let pool =new Pool("Test",
     1,
     2,
     2,
-    5000,
-    7000,
-    3000,
+    10,
+    19,
+    1,
     4,
     1000,
     0x111);

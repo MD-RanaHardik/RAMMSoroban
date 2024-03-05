@@ -106,6 +106,7 @@ export default function Page() {
           onChange={(e) => {
             const inputValue = parseInt(e.target.value, 10);
             setSecondaryAvailable(isNaN(inputValue) ? undefined : inputValue);
+
           }}
           className="bg-slate-100 py-3 w-full rounded-md px-2 mt-5"
         ></input>
@@ -113,9 +114,13 @@ export default function Page() {
         <input
           placeholder="Initial Primary Price"
           value={initialPrimaryPrice}
+          type="number"
+          step="0.1"
           onChange={(e) => {
-            const inputValue = parseInt(e.target.value, 10);
-            setInitialPrimaryPrice(isNaN(inputValue) ? undefined : inputValue);
+            // const inputValue = parseInt(e.target.value, 10);
+            // setInitialPrimaryPrice(isNaN(inputValue) ? undefined : inputValue);
+            setInitialPrimaryPrice(Number(e.target.value));
+
           }}
           className="bg-slate-100 py-3 w-full rounded-md px-2 mt-5"
         ></input>

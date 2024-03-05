@@ -97,12 +97,12 @@ fn set_pool(env:&Env,pool_name:&String,owner:&Address,pool_address:Address,pvt_q
         archived:false,
         treasury:0,
         x:0,
-        pvt_qty_max_primary:(pvt_qty_max_primary * Q9),
-        pvt_qty_max_secondary:(pvt_qty_max_primary * Q9),
-        pvt_price_max_primary:(pvt_price_max_primary * Q9),
-        pvt_price_max_secondary:(pvt_price_max_secondary * Q9),
-        pvt_price_initial_primary:(pvt_price_initial_primary * Q9),
-        pvt_available_secondary:(pvt_available_secondary * Q9),
+        pvt_qty_max_primary:pvt_qty_max_primary,
+        pvt_qty_max_secondary:pvt_qty_max_primary,
+        pvt_price_max_primary:pvt_price_max_primary,
+        pvt_price_max_secondary:pvt_price_max_secondary,
+        pvt_price_initial_primary:pvt_price_initial_primary,
+        pvt_available_secondary:pvt_available_secondary,
         c_primary_steepness:c_primary_steepness,
         pool_status:0
     };
@@ -235,7 +235,7 @@ impl Factory {
 
     pub fn create_pool(env:Env,owner:Address,pool_name:String,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,steepness:u32)->Address{
 
-        let pool_wasm_hash = bytesn!(&env,0xc5259cc881d2ced2b8385a4032905597cc995de4eb822ed40e72299da450fb2f);
+        let pool_wasm_hash = bytesn!(&env,0x0d38ef389299626c6e824b360e1d597762bfa5b997ac8887a75443ce9592498d);
         
         let token_wasm_hash = bytesn!(&env,0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5);
 

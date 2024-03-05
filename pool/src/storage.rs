@@ -236,9 +236,9 @@ pub(crate) fn set_pvt_qty_max_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtQtyMaxPrimary;
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_value);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -267,9 +267,9 @@ pub(crate) fn set_pvt_qty_max_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtQtyMaxSecondary;
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_value);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -280,9 +280,9 @@ pub(crate) fn set_pvt_qty_max_secondary(env:&Env,v:i128){
 
     let x = get_pvt_qty_max_secondary(env);
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    let value = x.checked_add(scaled_value).expect("Overflow occurs");
+    let value = x.checked_add(v).expect("Overflow occurs");
 
     env.storage().persistent().set(&key, &value);
 
@@ -299,9 +299,9 @@ pub(crate) fn set_pvt_available_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtAvailableSecondary;
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_value);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -385,9 +385,9 @@ pub(crate) fn set_pvt_price_initial_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceInitialPrimary;
 
-    let scaled_val = v * (10 as i128).pow(9);
+    // let scaled_val = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_val);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -416,9 +416,9 @@ pub(crate) fn set_pvt_price_max_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceMaxPrimary;
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_value);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -448,9 +448,9 @@ pub(crate) fn set_pvt_price_max_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceMaxSecondary;
 
-    let scaled_value = v * (10 as i128).pow(9);
+    // let scaled_value = v * (10 as i128).pow(9);
 
-    env.storage().persistent().set(&key, &scaled_value);
+    env.storage().persistent().set(&key, &v);
 
 }
 
@@ -480,10 +480,10 @@ pub(crate) fn set_a_primary_midpoint_initial_and_max_init(env:&Env,pvt_price_max
 
     let key = PoolKey::APrimaryMidpointInitialAndMax;
 
-    let pvt_price_max_primary_scaled = pvt_price_max_primary * Q9;
-    let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
+    // let pvt_price_max_primary_scaled = pvt_price_max_primary * Q9;
+    // let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
 
-    let a_primary_midpoint_initial_and_max = pvt_price_max_primary_scaled.checked_sub(pvt_price_initial_primary_scaled).expect("Underflow occur").checked_div(2).expect("Error");
+    let a_primary_midpoint_initial_and_max = pvt_price_max_primary.checked_sub(pvt_price_initial_primary).expect("Underflow occur").checked_div(2).expect("Error");
 
     env.storage().persistent().set(&key, &a_primary_midpoint_initial_and_max);
 
@@ -520,9 +520,9 @@ pub(crate) fn set_b_primary_half_max_qty_init(env:&Env,pvt_qty_max_primary:i128)
 
     let key = PoolKey::BPrimaryHalfMaxQty;
     
-    let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
+    // let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
 
-    let b_primary_half_max_qty = pvt_qty_max_primary_scaled.checked_div(2).expect("Error");
+    let b_primary_half_max_qty = pvt_qty_max_primary.checked_div(2).expect("Error");
 
     env.storage().persistent().set(&key, &b_primary_half_max_qty);
 
@@ -584,10 +584,10 @@ pub(crate) fn set_a_secondary_midpoint_initial_and_max_init(env:&Env,pvt_price_m
 
     let key = PoolKey::ASecondaryMidpointInitialAndMax;
 
-    let pvt_price_max_secondary_scaled = pvt_price_max_secondary * Q9;
-    let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
+    // let pvt_price_max_secondary_scaled = pvt_price_max_secondary * Q9;
+    // let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
 
-    let a_secondary_midpoint_initial_and_max = pvt_price_max_secondary_scaled.checked_sub(pvt_price_initial_primary_scaled).expect("Underflow occur").checked_div(2).expect("Error");
+    let a_secondary_midpoint_initial_and_max = pvt_price_max_secondary.checked_sub(pvt_price_initial_primary).expect("Underflow occur").checked_div(2).expect("Error");
 
     env.storage().persistent().set(&key, &a_secondary_midpoint_initial_and_max);
 
@@ -623,11 +623,11 @@ pub(crate) fn set_b_secondary_half_max_qty_init(env:&Env,pvt_qty_max_primary:i12
 
     let key = PoolKey::BSecondaryHalfMaxQty;
     
-    let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
+    // let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
 
-    let pvt_qty_max_secondary_scaled = pvt_qty_max_secondary * Q9;
+    // let pvt_qty_max_secondary_scaled = pvt_qty_max_secondary * Q9;
 
-    let b_secondary_half_max_qty = pvt_qty_max_primary_scaled.checked_add(pvt_qty_max_secondary_scaled).expect("Overflow occur").checked_div(2).expect("Error");
+    let b_secondary_half_max_qty = pvt_qty_max_primary.checked_add(pvt_qty_max_secondary).expect("Overflow occur").checked_div(2).expect("Error");
 
     env.storage().persistent().set(&key, &b_secondary_half_max_qty);
 
@@ -691,11 +691,11 @@ pub(crate) fn set_p_prime_init(env:&Env,pvt_price_initial_primary:i128){
 
     let key = PoolKey::PPrime;
 
-    let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
+    // let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
 
     let unadjusted_price = get_unadjusted_price(env, 1);
 
-    let p_prime = pvt_price_initial_primary_scaled.checked_sub(unadjusted_price).expect("Underflow");
+    let p_prime = pvt_price_initial_primary.checked_sub(unadjusted_price).expect("Underflow");
     
     env.storage().persistent().set(&key, &p_prime);
 

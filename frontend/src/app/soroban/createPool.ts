@@ -29,9 +29,11 @@ export const createPool = async (
 
     const account = await server.getAccount(accPubkey);
 
+    const Q9 = 10 **9;
+
     // owner:Address,pool_name:String,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,steepness:u32
 
-    const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name),numberToI128(max_primary_quantity),numberToI128(max_primary_price),numberToI128(initial_primary_price),numberToI128(secondary_available),numberTou32(steepness)];
+    const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name),numberToI128(max_primary_quantity * Q9),numberToI128(max_primary_price * Q9),numberToI128(initial_primary_price * Q9),numberToI128(secondary_available * Q9),numberTou32(steepness)];
 
     // const params = [accountToScVal(accPubkey), xdr.ScVal.scvString(pool_name)];
 

@@ -248,7 +248,6 @@ export default function Page() {
         showToast("Selling limit reached");
       }
       // console.log(e);
-
     })
   }
 
@@ -379,8 +378,13 @@ export default function Page() {
             <DropdownMenu.Content className='bg-slate-100 shadow-md p-3'>
 
               <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { router.push(`/txns/${props?.pool_address}`) }}>Transactions</DropdownMenu.Item>
-              <button onClick={() => { InitBuy(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9),(Number(props.primary_max_qty) / 10 ** 9),(Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
-              <button onClick={() => { InitSell(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
+              {
+                props.pool_status == 1 && <button onClick={() => { InitBuy(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9),(Number(props.primary_max_qty) / 10 ** 9),(Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
+              }
+              
+              {
+                props.pool_status == 1 && <button onClick={() => { InitSell(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
+              }
               
               <DropdownMenu.Separator />
               {(props.pool_status == 0 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StartPool(props.pool_id.toString()) }}>Start Pool</DropdownMenu.Item>}

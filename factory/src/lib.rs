@@ -37,6 +37,7 @@ pub struct Pool {
     pvt_price_max_primary:i128,
     pvt_price_max_secondary:i128,
     pvt_price_initial_primary:i128,
+    pvt_available_secondary:i128,
     c_primary_steepness:u32,
     pool_status:u32
 }
@@ -80,7 +81,7 @@ fn get_pool_address(env:&Env,pool_id:String)->Address{
     available_pools.get(pool_id).unwrap().pool_address
 }
 
-fn set_pool(env:&Env,pool_name:&String,owner:&Address,pool_address:Address,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_max_secondary:i128,pvt_price_initial_primary:i128,c_primary_steepness:u32){
+fn set_pool(env:&Env,pool_name:&String,owner:&Address,pool_address:Address,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_max_secondary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,c_primary_steepness:u32){
 
     let key = DataKey::Pools;
 
@@ -101,6 +102,7 @@ fn set_pool(env:&Env,pool_name:&String,owner:&Address,pool_address:Address,pvt_q
         pvt_price_max_primary:(pvt_price_max_primary * Q9),
         pvt_price_max_secondary:(pvt_price_max_secondary * Q9),
         pvt_price_initial_primary:(pvt_price_initial_primary * Q9),
+        pvt_available_secondary:(pvt_available_secondary * Q9),
         c_primary_steepness:c_primary_steepness,
         pool_status:0
     };
@@ -233,19 +235,19 @@ impl Factory {
 
     pub fn create_pool(env:Env,owner:Address,pool_name:String,pvt_qty_max_primary:i128,pvt_price_max_primary:i128,pvt_price_initial_primary:i128,pvt_available_secondary:i128,steepness:u32)->Address{
 
-        let pool_wasm_hash = bytesn!(&env,0x3e0b55703266e193225d096f86cf7559fb050fb754dff2afba59bbfcc1e88bec);
+        let pool_wasm_hash = bytesn!(&env,0xc5259cc881d2ced2b8385a4032905597cc995de4eb822ed40e72299da450fb2f);
         
         let token_wasm_hash = bytesn!(&env,0xc04dc2300124d5869a2dbbe81600ba0008f609e75ce254aca065c43d3a4abbe5);
 
         let created_pool = create_pool_contract(&env, pool_wasm_hash, pool_name.clone());
-
+        
         let p = pool_contract::Client::new(&env, &created_pool);
 
         let pvt_price_max_secondary = (2 * pvt_price_max_primary) - pvt_price_initial_primary;
 
         p.init(&token_wasm_hash,&owner,&pool_name,&pvt_qty_max_primary,&pvt_qty_max_primary,&pvt_price_max_primary,&pvt_price_max_secondary,&pvt_price_initial_primary,&pvt_available_secondary,&steepness);
 
-        set_pool(&env, &pool_name, &owner, created_pool.clone(),pvt_qty_max_primary,pvt_price_max_primary,pvt_price_max_secondary,pvt_price_initial_primary,steepness);
+        set_pool(&env, &pool_name, &owner, created_pool.clone(),pvt_qty_max_primary,pvt_price_max_primary,pvt_price_max_secondary,pvt_price_initial_primary,pvt_available_secondary,steepness);
 
         created_pool
     }

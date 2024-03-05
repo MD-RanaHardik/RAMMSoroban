@@ -62,6 +62,7 @@ export interface RammPool0 {
   pvt_price_max_secondary: number
   pvt_qty_max_primary: number
   pvt_qty_max_secondary: number
+  pvt_available_secondary:number,
   treasury: number
   x: string,
   pool_status: number,
@@ -206,7 +207,6 @@ export default function Page() {
   async function PoolBalance(poolId: string) {
 
     await getBalance(server, walletConnectKit, poolId).then((e) => {
-      console.log(e);
       setUSDCBalance(parseInt(e[0]) / (10**9));
       setPVTBalance(parseInt(e[1]) / (10**9));
     }).catch((e) => {
@@ -215,7 +215,7 @@ export default function Page() {
   }
 
  
-  async function InitBuy(pool_id:string){
+  async function InitBuy(pool_id:string,x:number,pvt_qty_max_primary:number,pvt_qty_max_secondary:number){
 
       await PoolBalance(pool_id);
 
@@ -225,9 +225,10 @@ export default function Page() {
         setBuyOrSell(true);
         setOpenModel(true);
       }).catch((e) => {
-  
-        console.log(e);
-  
+
+        if(x == (pvt_qty_max_primary + pvt_qty_max_secondary)){
+          showToast("Buying limit reached");
+        }
       })
   }
 
@@ -375,7 +376,7 @@ export default function Page() {
             <DropdownMenu.Content className='bg-slate-100 shadow-md p-3'>
 
               <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { router.push(`/txns/${props?.pool_address}`) }}>Transactions</DropdownMenu.Item>
-              <button onClick={() => { InitBuy(props.pool_id.toString()) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
+              <button onClick={() => { InitBuy(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9),(Number(props.primary_max_qty) / 10 ** 9),(Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
               <button onClick={() => { InitSell(props.pool_id.toString()) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
               
               <DropdownMenu.Separator />

@@ -226,7 +226,7 @@ impl Pool {
         let Q9 = (10 as i128).pow(9);
 
         if (x * Q9)
-            > pvt_qty_max_primary
+            >= pvt_qty_max_primary
                 .checked_add(pvt_qty_max_secondary)
                 .expect("Overflow")
         {
@@ -290,6 +290,8 @@ impl Pool {
 
         assert!(in_secondary_mode, "Not in secondary mode");
 
+        assert!(x > 0 ,"Sell is disabled");
+
         price = get_price_secondary(&env, x.checked_sub(1).expect("Underflow"));
 
         let pvttoken = get_pvt_token(&env);
@@ -335,14 +337,16 @@ impl Pool {
 
         let Q9 = (10 as i128).pow(9);
 
-        if (x * Q9)
-            > pvt_qty_max_primary
-                .checked_add(pvt_qty_max_secondary)
-                .expect("Overflow")
-        {
-            set_soldout_hits(&env, 1);
-            panic!("Maximum token sold");
-        }
+        assert!((x * Q9) < pvt_qty_max_primary.checked_add(pvt_qty_max_secondary).expect("Overflow"),"Maximum token sold");
+
+        // if (x * Q9)
+        //     > pvt_qty_max_primary
+        //         .checked_add(pvt_qty_max_secondary)
+        //         .expect("Overflow")
+        // {
+        //     set_soldout_hits(&env, 1);
+        //     panic!("Maximum token sold");
+        // }
 
         if !in_secondary_mode {
             price = get_price_primary(&env, x.checked_add(1).expect("Overflow"));
@@ -360,6 +364,8 @@ impl Pool {
         let x = get_x(&env);
 
         let mut price: i128 = 0;
+
+        assert!(x > 0 ,"Sell is disabled");
         
         if in_secondary_mode {
 

@@ -232,7 +232,7 @@ export default function Page() {
       })
   }
 
-  async function InitSell(pool_id:string){
+  async function InitSell(pool_id:string,x:number){
 
     await PoolBalance(pool_id);
 
@@ -244,7 +244,10 @@ export default function Page() {
       setOpenModel(true);
     }).catch((e) => {
 
-      console.log(e);
+      if(x == 0){
+        showToast("Selling limit reached");
+      }
+      // console.log(e);
 
     })
   }
@@ -377,7 +380,7 @@ export default function Page() {
 
               <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { router.push(`/txns/${props?.pool_address}`) }}>Transactions</DropdownMenu.Item>
               <button onClick={() => { InitBuy(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9),(Number(props.primary_max_qty) / 10 ** 9),(Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
-              <button onClick={() => { InitSell(props.pool_id.toString()) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
+              <button onClick={() => { InitSell(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
               
               <DropdownMenu.Separator />
               {(props.pool_status == 0 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StartPool(props.pool_id.toString()) }}>Start Pool</DropdownMenu.Item>}

@@ -156,6 +156,8 @@ impl Pool {
 
         set_pvt_address(&env, pvt_token_contract);
 
+        //Uncomment for test
+
         // let usdc_token_contract = create_contract(&env, token_wasm_hash,String::from_str(&env, "USDC"));
 
         // lptoken::Client::new(&env, &usdc_token_contract.clone()).initialize(
@@ -191,7 +193,6 @@ impl Pool {
         let pvt_qty_max_secondary = get_pvt_qty_max_secondary(&env);
         let pvt_available_secondary = get_pvt_available_secondary(&env);
 
-        // let scaled_amount = amount * (10 as i128).pow(9);
 
         let left = pvt_qty_max_secondary
             .checked_add(amount)
@@ -344,15 +345,6 @@ impl Pool {
         let Q9 = (10 as i128).pow(9);
 
         assert!((x * Q9) < pvt_qty_max_primary.checked_add(pvt_qty_max_secondary).expect("Overflow"),"Maximum token sold");
-
-        // if (x * Q9)
-        //     > pvt_qty_max_primary
-        //         .checked_add(pvt_qty_max_secondary)
-        //         .expect("Overflow")
-        // {
-        //     set_soldout_hits(&env, 1);
-        //     panic!("Maximum token sold");
-        // }
 
         if !in_secondary_mode {
             price = get_price_primary(&env, x.checked_add(1).expect("Overflow"));

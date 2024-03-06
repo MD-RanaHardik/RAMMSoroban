@@ -236,8 +236,6 @@ pub(crate) fn set_pvt_qty_max_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtQtyMaxPrimary;
 
-    // let scaled_value = v * (10 as i128).pow(9);
-
     env.storage().persistent().set(&key, &v);
 
 }
@@ -266,8 +264,6 @@ pub(crate) fn get_pvt_qty_max_primary(env:&Env)->i128{
 pub(crate) fn set_pvt_qty_max_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtQtyMaxSecondary;
-
-    // let scaled_value = v * (10 as i128).pow(9);
 
     env.storage().persistent().set(&key, &v);
 
@@ -298,8 +294,6 @@ pub(crate) fn get_pvt_qty_max_secondary(env:&Env)->i128{
 pub(crate) fn set_pvt_available_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtAvailableSecondary;
-
-    // let scaled_value = v * (10 as i128).pow(9);
 
     env.storage().persistent().set(&key, &v);
 
@@ -385,8 +379,6 @@ pub(crate) fn set_pvt_price_initial_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceInitialPrimary;
 
-    // let scaled_val = v * (10 as i128).pow(9);
-
     env.storage().persistent().set(&key, &v);
 
 }
@@ -415,8 +407,6 @@ pub(crate) fn get_pvt_price_initial_primary(env:&Env)->i128{
 pub(crate) fn set_pvt_price_max_primary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceMaxPrimary;
-
-    // let scaled_value = v * (10 as i128).pow(9);
 
     env.storage().persistent().set(&key, &v);
 
@@ -448,8 +438,6 @@ pub(crate) fn set_pvt_price_max_secondary_init(env:&Env,v:i128){
 
     let key = PoolKey::PvtPriceMaxSecondary;
 
-    // let scaled_value = v * (10 as i128).pow(9);
-
     env.storage().persistent().set(&key, &v);
 
 }
@@ -479,9 +467,6 @@ pub(crate) fn get_pvt_price_max_secondary(env:&Env)->i128{
 pub(crate) fn set_a_primary_midpoint_initial_and_max_init(env:&Env,pvt_price_max_primary:i128,pvt_price_initial_primary:i128){
 
     let key = PoolKey::APrimaryMidpointInitialAndMax;
-
-    // let pvt_price_max_primary_scaled = pvt_price_max_primary * Q9;
-    // let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
 
     let a_primary_midpoint_initial_and_max = pvt_price_max_primary.checked_sub(pvt_price_initial_primary).expect("Underflow occur").checked_div(2).expect("Error");
 
@@ -520,8 +505,6 @@ pub(crate) fn set_b_primary_half_max_qty_init(env:&Env,pvt_qty_max_primary:i128)
 
     let key = PoolKey::BPrimaryHalfMaxQty;
     
-    // let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
-
     let b_primary_half_max_qty = pvt_qty_max_primary.checked_div(2).expect("Error");
 
     env.storage().persistent().set(&key, &b_primary_half_max_qty);
@@ -622,10 +605,6 @@ pub(crate) fn get_a_secondary_midpoint_initial_and_max(env:&Env)->i128{
 pub(crate) fn set_b_secondary_half_max_qty_init(env:&Env,pvt_qty_max_primary:i128,pvt_qty_max_secondary:i128){
 
     let key = PoolKey::BSecondaryHalfMaxQty;
-    
-    // let pvt_qty_max_primary_scaled = pvt_qty_max_primary * Q9;
-
-    // let pvt_qty_max_secondary_scaled = pvt_qty_max_secondary * Q9;
 
     let b_secondary_half_max_qty = pvt_qty_max_primary.checked_add(pvt_qty_max_secondary).expect("Overflow occur").checked_div(2).expect("Error");
 
@@ -690,8 +669,6 @@ pub(crate) fn get_c_secondary_steepness(env:&Env)->u32{
 pub(crate) fn set_p_prime_init(env:&Env,pvt_price_initial_primary:i128){
 
     let key = PoolKey::PPrime;
-
-    // let pvt_price_initial_primary_scaled = pvt_price_initial_primary * Q9;
 
     let unadjusted_price = get_unadjusted_price(env, 1);
 

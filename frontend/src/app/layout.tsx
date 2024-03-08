@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Theme hasBackground= {true} panelBackground="solid" accentColor="gray">
           {
-            process.env.MODE == "0" ? 
+            true ? 
             <MaintenanceMode />
             :
           <GlobalContext>

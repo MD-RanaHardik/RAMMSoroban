@@ -101,6 +101,7 @@ export default function Page() {
     if (walletConnectKit) {
       await getAllPools(server, walletConnectKit).then((e) => {
         if (e != undefined) {
+          console.log(e);
           setPools(e);
         }
       }).catch((e) => {

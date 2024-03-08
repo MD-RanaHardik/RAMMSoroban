@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import GlobalContext from "./Context/store";
 import '@radix-ui/themes/styles.css';
 import { Theme } from "@radix-ui/themes";
+import MaintenanceMode from "./components/MaintenanceMode";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +21,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
 
       <body className={inter.className}>
         <Theme hasBackground= {true} panelBackground="solid" accentColor="gray">
+          {
+            process.env.MODE == "0" ? 
+            <MaintenanceMode />
+            :
           <GlobalContext>
             {children}
           </GlobalContext>
+          }
         </Theme>
       </body>
     </html>

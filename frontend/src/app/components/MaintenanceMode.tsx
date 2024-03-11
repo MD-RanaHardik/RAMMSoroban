@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 
+// Maintainance Mode Page
 export default function MaintenanceMode() {
   return (
     <div className='flex items-center justify-center align-middle h-screen'>

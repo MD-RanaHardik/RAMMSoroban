@@ -15,15 +15,19 @@ export default function PoolTxns({ params }:any) {
 
   useEffect(() => {
     getLatestLedger()
+    // get pool ledgers using pool address
     getPoolLedgers(params.pool_txns)
   }, [params, latestLedger])
 
+  // This function will get latest ledger on rpc and set it to latestLedger state.
   const getLatestLedger = async () => {
+    // request parameters
     let requestBody = {
       "jsonrpc": "2.0",
       "id": 8675309,
       "method": "getLatestLedger"
     }
+    // fetch request
     let res = await fetch(`${Network}`, {
       method: 'POST',
       headers: {
@@ -32,14 +36,18 @@ export default function PoolTxns({ params }:any) {
       body: JSON.stringify(requestBody),
     })
     let json = await res.json()
+    // set latest ledger.
     setLatestLedger(json?.result?.sequence)
   }
 
+  // This function will get pool ledgers and set it to poolTransactions
   const getPoolLedgers = async (poolId: string) => {
     if (latestLedger != undefined) {
-      
+      // getEvents of paticular pool id, we've passed latestLedger - 16500 to avoid error of too old ledgers.
+      // Example : if latestLedger is 38400, then startLedger will be 38400 - 16500 = 21900.
       let data = await getEvents(latestLedger - 16500, poolId)
       if (!data?.message) {
+        // set pool events
         setPoolTransactions(data)
       } else {
         console.log(data?.message)
@@ -146,6 +154,7 @@ function TableRow(props: any) {
   </>
 }
 
+// This function will shorten any particular string
 const shortenString = (str: string) => {
   if (str.length > 25) {
     return str.substring(0, 30) + "...";

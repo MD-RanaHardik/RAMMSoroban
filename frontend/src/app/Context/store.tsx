@@ -13,7 +13,6 @@ import { getNetwork } from "@stellar/freighter-api"
 import { TESTNET_DETAILS } from '../soroban/network';
 
 
-
 const { Server } = SorobanRpc;
 
 
@@ -32,8 +31,6 @@ const DefaultContextData: ContextType = {
 };
 
 
-
-
 export const server = new Server(
     Network,
     { allowHttp: true }
@@ -45,28 +42,26 @@ export const Context = createContext<ContextType>(DefaultContextData);
 
 
 export default function GlobalContext({ children }: React.PropsWithChildren) {
-
+    // Using Stellar Wallet Kit for freighter wallet
     const [walletConnectKit] = useState(new StellarWalletsKit({ network: TESTNET_DETAILS.networkPassphrase as unknown as WalletNetwork, selectedWallet: WalletType.FREIGHTER, }))
 
     const [activePubkey, setActivePubKey] = useState<string | undefined>(undefined);
 
     const pathName = usePathname();
 
-
-
     useEffect(() => {
         get_wallet_pubkey();
     }, [activePubkey])
 
 
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // --- This function will get connected wallet's public key and will set that key to activePubKey
     async function get_wallet_pubkey() {
         let network = await getNetwork();
         if (network == SUPPORTED_NETWORK || network == SUPPORTED_NETWORK1) {
             if (walletConnectKit) {
                 const key = await walletConnectKit.getPublicKey();
                 if (key != undefined) {
+                    //set public key
                     setActivePubKey(key);
                 }
             }

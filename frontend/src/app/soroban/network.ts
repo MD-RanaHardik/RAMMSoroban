@@ -1,3 +1,4 @@
+// --- Details of network
 export const TESTNET_DETAILS = {
     network: "FUTURENET",
     networkUrl: "https://rpc-futurenet.stellar.org",

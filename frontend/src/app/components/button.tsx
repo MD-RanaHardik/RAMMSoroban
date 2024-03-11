@@ -9,6 +9,7 @@ interface PropsType{
     isWaiting:boolean
 }
 
+// Button Component
 export default function  Button(props:PropsType) {
   
   const [isWaiting,setIsWaiting] = useState<boolean>(false);

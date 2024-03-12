@@ -1,0 +1,16 @@
+/media/hardik/08382CBC382CAB20/Soroban/project/ClientProject/token/target/debug/deps/libstellar_xdr-47f16ec8f0dae5b7.rmeta: /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/lib.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/mod.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/generated.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/str.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_conversions.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_validations.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scmap.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/curr-version /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/next-version
+
+/media/hardik/08382CBC382CAB20/Soroban/project/ClientProject/token/target/debug/deps/stellar_xdr-47f16ec8f0dae5b7.d: /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/lib.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/mod.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/generated.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/str.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_conversions.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_validations.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scmap.rs /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/curr-version /home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/next-version
+
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/lib.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/mod.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/generated.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/str.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_conversions.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scval_validations.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/curr/scmap.rs:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/curr-version:
+/home/hardik/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stellar-xdr-20.0.2/src/../xdr/next-version:
+
+# env-dep:CARGO_PKG_VERSION=20.0.2
+# env-dep:GIT_REVISION=a928e82943e4e93c887555fdec3b1e139ad810d2

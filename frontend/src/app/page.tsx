@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Context, server } from './Context/store';
 import { getAllPools } from './soroban/getAllPools';
 import MySorobanReactProvider from './soroban/provider';
-import { VscOpenPreview } from "react-icons/vsc";
 import { DropdownMenu, Button, Flex, } from '@radix-ui/themes';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
@@ -21,10 +20,7 @@ import { useRouter } from 'next/navigation';
 import { getBuyPrice } from './soroban/getBuyPrice';
 import { getSellPrice } from './soroban/getSellPrice';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { tree } from 'next/dist/build/templates/app-page';
 import { getBalance } from './soroban/getBalance';
-
-
 
 
 interface tableRowProps {
@@ -62,7 +58,7 @@ export interface RammPool0 {
   pvt_price_max_secondary: number
   pvt_qty_max_primary: number
   pvt_qty_max_secondary: number
-  pvt_available_secondary:number,
+  pvt_available_secondary: number,
   treasury: number
   x: string,
   pool_status: number,
@@ -71,7 +67,7 @@ export interface RammPool0 {
 }
 
 export default function Page() {
-
+  // get required variables from context
   const { activePubkey, setActivePubKey, walletConnectKit, showToast } = useContext(Context);
 
   const [pools, setPools] = useState<Root | {}>();
@@ -81,7 +77,7 @@ export default function Page() {
   const [buyOrSell, setBuyOrSell] = useState(true);
   const [inSecondaryMode, setInSecondaryMode] = useState(false);
   const [openModel, setOpenModel] = useState(false);
-  const [poolID, setPoolID] = useState<string|undefined>(undefined);
+  const [poolID, setPoolID] = useState<string | undefined>(undefined);
   const [usdcBalance, setUSDCBalance] = useState(0);
   const [pvtBalance, setPVTBalance] = useState(0);
 
@@ -93,15 +89,14 @@ export default function Page() {
   }, [])
 
 
-
-
-
+  // This function will get all the available pools
   async function getAvailablePools() {
-
     if (walletConnectKit) {
+      // getAllPools will return available pools
       await getAllPools(server, walletConnectKit).then((e) => {
         if (e != undefined) {
           console.log(e);
+          // set to pools 
           setPools(e);
         }
       }).catch((e) => {
@@ -110,8 +105,9 @@ export default function Page() {
     }
   }
 
+  // This function is used to buy PVT token from specific pool using pool id
   async function BuyPVTTOken(poolId: string) {
-
+    // buyPVTTOken will buy token from selected pool
     await buyPVTTOken(server, walletConnectKit, poolId).then((e) => {
       setOpenModel(false);
       showToast(`Token bought successfully`);
@@ -124,11 +120,13 @@ export default function Page() {
 
   }
 
+  // This function is used to sell PVT token from specific pool using pool id
   async function SellPVTTOken(poolId: string) {
-
+    // sellPVTToken will buy token from selected pool
     await sellPVTToken(server, walletConnectKit, poolId).then((e) => {
       setOpenModel(false);
       showToast(`Token sold successfully`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
       setOpenModel(false);
@@ -137,10 +135,12 @@ export default function Page() {
 
   }
 
+  // This function is used to archive using pool id
   async function ArchivePool(poolId: string) {
-
+    // archivePool will set selected pool to archive
     await archivePool(server, walletConnectKit, poolId).then((e) => {
       showToast(`Pool successfully archive`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -149,10 +149,12 @@ export default function Page() {
 
   }
 
+  // This function is used to unarchive using pool id
   async function UnarchivePool(poolId: string) {
-
+    // unarchivePool will set selected pool to unarchive
     await unarchivePool(server, walletConnectKit, poolId).then((e) => {
       showToast(`Pool successfully unarchive`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -160,10 +162,12 @@ export default function Page() {
     })
   }
 
+  // This function is used to start pool using pool id
   async function StartPool(poolId: string) {
-
+    // start a pool using it's pool id
     await startPool(server, walletConnectKit, poolId).then((e) => {
       showToast(`Pool started`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -171,10 +175,12 @@ export default function Page() {
     })
   }
 
+  // This function is used to stop pool using pool id
   async function StopPool(poolId: string) {
-
+    // stop a pool using it's pool id
     await stopPool(server, walletConnectKit, poolId).then((e) => {
       showToast(`Pool stop`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -182,11 +188,12 @@ export default function Page() {
     })
   }
 
-
+  // This function is used to expand limit of pvt_qty_max_secondary using their pool id
   async function ExpandPool(poolId: string, amount: number) {
-
+    // expand limit of pvt_qty_max_secondary of a pool using it's pool id with parameter amount
     await expandPool(server, walletConnectKit, poolId, amount).then((e) => {
       showToast(`Pool expanded by ${amount}`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -194,10 +201,12 @@ export default function Page() {
     })
   }
 
+  // This function is used to withdraw fund from pool using pool id
   async function WithdrawFund(poolId: string) {
-
+    // withdraw fund from a pool using it's pool id
     await withdrawPoolFund(server, walletConnectKit, poolId).then((e) => {
       showToast(`Successfully withdraw pool fund`);
+      // get available pools
       getAvailablePools();
     }).catch((e) => {
 
@@ -205,47 +214,54 @@ export default function Page() {
     })
   }
 
+  // This function is used to get pool balance using pool id
   async function PoolBalance(poolId: string) {
-
+    // get balance from pool using it's pool id
     await getBalance(server, walletConnectKit, poolId).then((e) => {
-      setUSDCBalance(parseInt(e[0]) / (10**9));
-      setPVTBalance(parseInt(e[1]) / (10**9));
+      // set USDC balance
+      setUSDCBalance(parseInt(e[0]) / (10 ** 9));
+      // set PVT balance
+      setPVTBalance(parseInt(e[1]) / (10 ** 9));
     }).catch((e) => {
       console.log(e);
     })
   }
 
- 
-  async function InitBuy(pool_id:string,x:number,pvt_qty_max_primary:number,pvt_qty_max_secondary:number){
+  // This function is used to buy from pool using pool id and other parameters
+  async function InitBuy(pool_id: string, x: number, pvt_qty_max_primary: number, pvt_qty_max_secondary: number) {
+    // get pool balance
+    await PoolBalance(pool_id);
+    // get buy price from a pool using it's pool id
+    await getBuyPrice(server, walletConnectKit, pool_id).then((e) => {
+      // set Buy price
+      setBuyPrice(parseInt(e.toString()) / (10 ** 9));
+      setPoolID(pool_id);
+      setBuyOrSell(true);
+      setOpenModel(true);
+    }).catch((e) => {
 
-      await PoolBalance(pool_id);
-
-      await getBuyPrice(server, walletConnectKit, pool_id).then((e) => {
-        setBuyPrice(parseInt(e.toString()) / (10 ** 9));
-        setPoolID(pool_id);
-        setBuyOrSell(true);
-        setOpenModel(true);
-      }).catch((e) => {
-
-        if(x == (pvt_qty_max_primary + pvt_qty_max_secondary)){
-          showToast("Buying limit reached");
-        }
-      })
+      if (x == (pvt_qty_max_primary + pvt_qty_max_secondary)) {
+        showToast("Buying limit reached");
+      }
+    })
   }
 
-  async function InitSell(pool_id:string,x:number){
-
+  // This function is used to sell from pool using pool id and x
+  async function InitSell(pool_id: string, x: number) {
+    // get pool balance
     await PoolBalance(pool_id);
-
+    // get sell price from a pool using it's pool id
     await getSellPrice(server, walletConnectKit, pool_id).then((e) => {
+      // set Sell price
       setSellPrice(parseInt(e[1]) / (10 ** 9));
+      // set secondary mode
       setInSecondaryMode((e[0].toString() == "false") ? false : true);
       setPoolID(pool_id);
       setBuyOrSell(false);
       setOpenModel(true);
     }).catch((e) => {
 
-      if(x == 0){
+      if (x == 0) {
         showToast("Selling limit reached");
       }
       // console.log(e);
@@ -256,7 +272,7 @@ export default function Page() {
 
   function Model() {
     return <>
-      <Dialog.Root open={openModel} onOpenChange={()=>{setOpenModel(!openModel)}}>
+      <Dialog.Root open={openModel} onOpenChange={() => { setOpenModel(!openModel) }}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0 bg-slate-600/25 backdrop-blur" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
@@ -266,11 +282,11 @@ export default function Page() {
             <Dialog.Description className="text-slate-800 mt-7 mb-5 text-lg leading-normal">
               {
                 buyOrSell ? <>{buyPrice} USDC ≈ 1 PVT</>
-                : 
-                <>1 PVT ≈ {sellPrice} USDC</>
+                  :
+                  <>1 PVT ≈ {sellPrice} USDC</>
               }
-              
-              
+
+
             </Dialog.Description>
             <fieldset className="mb-[15px] flex items-center gap-5 justify-center">
               <input
@@ -280,31 +296,31 @@ export default function Page() {
               />
             </fieldset>
             <div>
-            <p>PVT Balance : {pvtBalance}</p>
-            <p>USDC Balance : {usdcBalance}</p>
+              <p>PVT Balance : {pvtBalance}</p>
+              <p>USDC Balance : {usdcBalance}</p>
             </div>
             <div className="mt-[25px] flex justify-center">
               {/* <Dialog.Close asChild> */}
-              
+
 
               {
                 buyOrSell ?
-                  (usdcBalance >= buyPrice)?
-                  <button onClick={() => {poolID && BuyPVTTOken(poolID)}} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Buy</button>
-                  :
-                  <button className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none disabled:cursor-not-allowed" disabled={true}>Insufficient Balance</button>
-                :
-                  inSecondaryMode ?
-                    (pvtBalance >= 1)?
-                    <button onClick={() => {poolID && SellPVTTOken(poolID) }} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Sell</button>
+                  (usdcBalance >= buyPrice) ?
+                    <button onClick={() => { poolID && BuyPVTTOken(poolID) }} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Buy</button>
                     :
                     <button className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none disabled:cursor-not-allowed" disabled={true}>Insufficient Balance</button>
+                  :
+                  inSecondaryMode ?
+                    (pvtBalance >= 1) ?
+                      <button onClick={() => { poolID && SellPVTTOken(poolID) }} className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">Sell</button>
+                      :
+                      <button className="text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none disabled:cursor-not-allowed" disabled={true}>Insufficient Balance</button>
                     :
                     <button className="cursor-not-allowed text-xl bg-slate-900 w-full py-6 text-white hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none " disabled={true}>
                       NOT IN SECONDARY MODE
                     </button>
               }
-              
+
               {/* </Dialog.Close> */}
             </div>
             <Dialog.Close asChild>
@@ -323,7 +339,7 @@ export default function Page() {
 
   }
 
- 
+
 
   function TableRow(props: tableRowProps) {
 
@@ -364,7 +380,7 @@ export default function Page() {
         <td className="px-6 py-4">
           {(Number(props.treasury) / 10 ** 9).toString()}
         </td>
-        
+
         <td className="px-6 py-4 flex items-center text-center">
 
 
@@ -380,13 +396,13 @@ export default function Page() {
 
               <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { router.push(`/txns/${props?.pool_address}`) }}>Transactions</DropdownMenu.Item>
               {
-                props.pool_status == 1 && <button onClick={() => { InitBuy(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9),(Number(props.primary_max_qty) / 10 ** 9),(Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
+                props.pool_status == 1 && <button onClick={() => { InitBuy(props.pool_id.toString(), (Number(props.pvttokens) / 10 ** 9), (Number(props.primary_max_qty) / 10 ** 9), (Number(props.secondary_max_qty) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Buy</button>
               }
-              
+
               {
-                props.pool_status == 1 && <button onClick={() => { InitSell(props.pool_id.toString(),(Number(props.pvttokens) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
+                props.pool_status == 1 && <button onClick={() => { InitSell(props.pool_id.toString(), (Number(props.pvttokens) / 10 ** 9)) }} className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300'>Sell</button>
               }
-              
+
               <DropdownMenu.Separator />
               {(props.pool_status == 0 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StartPool(props.pool_id.toString()) }}>Start Pool</DropdownMenu.Item>}
               {(props.pool_status == 1 && activePubkey == props.pool_owner) && <DropdownMenu.Item className='text-sm text-left px-3 py-1.5 rounded-sm w-full hover:bg-slate-300 hover:text-slate-900' onClick={() => { StopPool(props.pool_id.toString()) }}>Stop Pool</DropdownMenu.Item>}

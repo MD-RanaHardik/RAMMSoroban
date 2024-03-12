@@ -16,7 +16,7 @@ interface ConnectWalletProp {
     showToast: (msg:string) => void
 }
 
-
+// Header page
 export default function Header(prop: ConnectWalletProp) {
 
     const path = usePathname();
@@ -36,10 +36,9 @@ export default function Header(prop: ConnectWalletProp) {
                     <button onClick={()=>{FaucetUSDC(server,prop.walletKit,prop.showToast)}} className='mx-3 hover:text-slate-700'>Send 10 USDC</button>
                 </ul>
                 </div> 
-                
+                {/* Connect Wallet  */}
                 <ConnectWallet activeWalletKey={prop.activeWalletKey} setActiveWalletKey={prop.setActiveWalletKey} walletKit={prop.walletKit}></ConnectWallet>
                
-
         </div>
     )
 }

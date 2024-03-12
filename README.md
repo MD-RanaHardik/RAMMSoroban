@@ -1,23 +1,16 @@
-# Contract Deployment
+# Getting Started
 
-### Compile soroban contract
+### How to use factory contract
+[Factory Contract](factory/README.md)
 
-```
-soroban contract build
-```
 
-### Get pool contract wasm hash
-```
-soroban contract install --wasm target/wasm32-unknown-unknown/release/pool.wasm --source alice(identity account name) --network futurenet
-```
+### How to use pool contract
+[Pool Contract](pool/README.md)
 
-Note: Above command returns wasm hash replace that hash into factory contract (in to create_pool method )
+### How to use token contract
+[Token Contract](token/README.md)
 
-### Deploy factory contract
-```
-soroban contract deploy --wasm target/wasm32-unknown-unknown/release/factory.wasm --source alice --network futurenet
-```
-Note: Above command returns factory contract address replace that factory contract address with factory contract address of frontend default factory contract address
-
+### How to use frontend
+[Frontend](frontend/README.md)
 
 

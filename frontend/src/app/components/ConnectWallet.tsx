@@ -1,13 +1,10 @@
 "use client"
-import { Avatar, Button, Flex, Heading, Popover, } from '@radix-ui/themes';
+import { Button, Heading, Popover, } from '@radix-ui/themes';
 import { ISupportedWallet, StellarWalletsKit, WalletType } from '@sekmet/stellar-wallets-kit'
-import Image from 'next/image';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
 import { getBalanceUSDC } from '../soroban/getBalanceUSDC';
 import { Context, server } from '../Context/store';
-
 
 
 interface ConnectWalletProp {
@@ -16,6 +13,7 @@ interface ConnectWalletProp {
     walletKit: StellarWalletsKit | undefined
 }
 
+// Wallet Connect
 export default function ConnectWallet(prop: ConnectWalletProp) {
 
     const path = usePathname();
@@ -24,14 +22,14 @@ export default function ConnectWallet(prop: ConnectWalletProp) {
 
     const { activePubkey, setActivePubKey, walletConnectKit, showToast } = useContext(Context);
 
-
     useEffect(() => {
         GetUSDCBalance();
     }, [])
 
+    // --- This function is used to get USDC balance
     async function GetUSDCBalance() {
         await getBalanceUSDC(server,walletConnectKit).then((result) => {
-            // console.log("Balance",result)
+            // Set USDC balance
             setUSDCBalance(parseInt(result)/ (10**9));
         }).catch((err) => {
             console.log(err)
@@ -64,7 +62,7 @@ export default function ConnectWallet(prop: ConnectWalletProp) {
     )
 }
 
-
+// Connect Wallet 
 export async function connectWallet(walletKit: StellarWalletsKit | undefined, setActiveWalletKey: React.Dispatch<React.SetStateAction<string | undefined>>) {
 
     if (walletKit != undefined) {
@@ -86,7 +84,7 @@ export async function connectWallet(walletKit: StellarWalletsKit | undefined, se
                     await walletKit.setWallet(option.type);
 
                     const publicKey = await walletKit.getPublicKey();
-
+                    // set public key to activeWalletKey
                     setActiveWalletKey(publicKey.toString());
 
                 } catch (error) {

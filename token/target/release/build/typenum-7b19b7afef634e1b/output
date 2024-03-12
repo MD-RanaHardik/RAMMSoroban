@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=build/main.rs
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/media/hardik/08382CBC382CAB20/Soroban/project/ClientProject/token/target/release/build/typenum-7b19b7afef634e1b/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/media/hardik/08382CBC382CAB20/Soroban/project/ClientProject/token/target/release/build/typenum-7b19b7afef634e1b/out/op.rs

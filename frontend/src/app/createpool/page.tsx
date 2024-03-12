@@ -34,12 +34,14 @@ export default function Page() {
   };
 
   console.log(selectedSteepness, "selectedSteepness");
+
   useEffect(() => {
     getConnectedNetwork();
   }, [activePubkey]);
 
+  // --- This function will get connected network's details
   async function getConnectedNetwork() {
-    console.log("first");
+    // get network details
     let network = await getNetwork();
     console.log(network);
 
@@ -50,10 +52,12 @@ export default function Page() {
     }
   }
 
+  // --- This function will create a new pool.
   async function createNewPool() {
     setLoader(true);
 
     if (walletConnectKit && poolName != undefined && maxPrimaryQuantity != undefined && maxPrimaryPrice != undefined && secondaryAvailable != undefined && initialPrimaryPrice != undefined) {
+      // Create pool using required parameters
       await createPool(server, walletConnectKit, poolName,maxPrimaryQuantity,maxPrimaryPrice,secondaryAvailable,initialPrimaryPrice,Steepness[selectedSteepness])
         .then((e) => {
           showToast("Pool created");
@@ -117,10 +121,7 @@ export default function Page() {
           type="number"
           step="0.1"
           onChange={(e) => {
-            // const inputValue = parseInt(e.target.value, 10);
-            // setInitialPrimaryPrice(isNaN(inputValue) ? undefined : inputValue);
             setInitialPrimaryPrice(Number(e.target.value));
-
           }}
           className="bg-slate-100 py-3 w-full rounded-md px-2 mt-5"
         ></input>

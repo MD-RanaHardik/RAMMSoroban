@@ -65,7 +65,7 @@ use crate::storage::{ get_owner, get_pvt_token, get_treasury, is_pool_started };
 
 const TOKEN: Symbol = symbol_short!("TOKEN");
 
-//Storage which used for storage all required value particular pool
+//Storage which used for store all required value of particular pool
 #[derive(Debug, Clone, Copy)]
 #[repr(u32)]
 pub enum PoolKey {

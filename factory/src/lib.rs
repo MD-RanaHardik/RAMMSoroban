@@ -16,7 +16,7 @@ mod pool_contract {
     );
 }
 
-//Q9 variable used for scale unscaled 
+//Q9 variable used for scale upscale value 
 const Q9:i128 = (10 as i128).pow(9);
 
 //Storage where we store all pool data in mapping
@@ -26,7 +26,7 @@ pub enum DataKey {
     Pools=1
 }
 
-//Storage which used for storage all required value particular pool
+//Storage which used for store all required value of particular pool
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Pool {
@@ -61,7 +61,7 @@ contractmeta!(
     val = "Factory"
 );
 
-//Function for get new pool id based on current pool index
+//Function use for get new pool id based on current pool index
 fn get_next_pool_id(env:&Env,pool_index:u32)-> String{
     //Created new alloc string and append pool name and index of current pool into string
     let mut str = STR::new();
@@ -90,7 +90,7 @@ fn get_pool_address(env:&Env,pool_id:String)->Address{
     //If pool not exist it will panic
     assert!(is_available,"Pool Already Exist");
 
-    //If pool available the returns pool address
+    //If pool available it will returns pool address
     available_pools.get(pool_id).unwrap().pool_address
 }
 
@@ -144,7 +144,7 @@ fn get_all_pool(env:&Env)->Map<String, Pool>{
     pools
 }
 
-//Function help to set new x and treasury whenever anyone buy or sell 
+//Function help to set new x and treasury value whenever anyone buy or sell 
 fn set_pool_x_and_treasury(env:&Env,pool_id:String,x:i128,treasury:i128){
 
     let key = DataKey::Pools;

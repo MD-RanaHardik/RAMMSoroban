@@ -33,8 +33,7 @@ export default function Page() {
     setSelectedSteepness(event.target.value);
   };
 
-  console.log(selectedSteepness, "selectedSteepness");
-
+ 
   useEffect(() => {
     getConnectedNetwork();
   }, [activePubkey]);
@@ -43,8 +42,7 @@ export default function Page() {
   async function getConnectedNetwork() {
     // get network details
     let network = await getNetwork();
-    console.log(network);
-
+   
     if (network == SUPPORTED_NETWORK || network == SUPPORTED_NETWORK1) {
       setIsWrongNetwork(false);
     } else {
